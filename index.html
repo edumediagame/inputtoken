@@ -1,26 +1,98 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Elearning</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Halaman Perantara Ujian</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Masuk ke E-Learning</h1>
+  <div class="card">
+    <h2>Login Ujian</h2>
     <form id="loginForm">
       <label for="kelas">Kelas</label>
-      <input type="text" id="kelas" required placeholder="Masukkan kelas">
+      <input type="text" id="kelas" required />
 
       <label for="token">Token</label>
-      <input type="password" id="token" required placeholder="Masukkan token">
+      <input type="text" id="token" required />
 
       <button type="submit">Masuk</button>
+      <p class="error" id="error"></p>
     </form>
-    <p id="error" class="error"></p>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const kelas = document.getElementById("kelas").value.trim();
+      const token = document.getElementById("token").value.trim();
+      const errorEl = document.getElementById("error");
+
+      try {
+        const res = await fetch(`/api/validate?kelas=${kelas}&token=${token}`);
+        const data = await res.json();
+
+        if (data.success && data.link) {
+          // langsung redirect ke link tujuan
+          window.location.href = data.link;
+        } else {
+          errorEl.textContent = "Kelas atau token salah.";
+        }
+      } catch (err) {
+        errorEl.textContent = "Terjadi kesalahan. Coba lagi.";
+      }
+    });
+  </script>
 </body>
 </html>
