@@ -2,12 +2,15 @@ export default async function handler(req, res) {
   const { url } = req.query;
 
   try {
-    const response = await fetch(url);
-    const body = await response.text();
+    // Cek apakah server tujuan bisa dijangkau (HEAD request lebih ringan)
+    const response = await fetch(url, { method: "HEAD" });
+    if (!response.ok) throw new Error("Server bermasalah");
 
-    res.setHeader("Content-Type", "text/html");
-    res.status(200).send(body);
+    // Kalau OK → redirect ke link tujuan
+    res.writeHead(302, { Location: url });
+    res.end();
   } catch (err) {
+    // Kalau gagal → tampilkan halaman error custom
     res.setHeader("Content-Type", "text/html");
     res.status(200).send(`
       <html>
