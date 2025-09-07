@@ -2,11 +2,11 @@ export default async function handler(req, res) {
   const { url } = req.query;
 
   try {
-    // Cek apakah server tujuan bisa dijangkau (HEAD request lebih ringan)
-    const response = await fetch(url, { method: "HEAD" });
+    // Tes dengan GET ringan (ambil hanya header)
+    const response = await fetch(url, { method: "GET" });
     if (!response.ok) throw new Error("Server bermasalah");
 
-    // Kalau OK → redirect ke link tujuan
+    // Kalau OK → redirect user ke link tujuan
     res.writeHead(302, { Location: url });
     res.end();
   } catch (err) {
