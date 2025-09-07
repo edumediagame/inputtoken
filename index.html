@@ -85,7 +85,7 @@
 
         if (data.success && data.link) {
           // langsung redirect ke link tujuan
-          window.location.href = data.link;
+          window.location.replace(data.link);
         } else {
           errorEl.textContent = "Kelas atau token salah.";
         }
